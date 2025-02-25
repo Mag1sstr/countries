@@ -11,13 +11,12 @@ export default function MainPage() {
     queryKey: ["countries"],
     queryFn: getCountries,
   });
+
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;
   const totalPages = Math.ceil(Number(data?.length) / pageSize);
   const startPageIndex = currentPage * pageSize - pageSize;
   const endPageIndex = startPageIndex + pageSize;
-
-  console.log(startPageIndex, endPageIndex);
 
   return (
     <section className={styles.main}>

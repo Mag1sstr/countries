@@ -2,6 +2,7 @@
 :root {
   --body-background: #f6f6f6;
   --text-color: #1c1c1c;
+  --dark-background: #2b3743;
 }
 * {
   margin: 0;
@@ -16,4 +17,7 @@ body {
   max-width: 1420px;
   margin: 0 auto;
   padding: 0 10px;
+}
+.dark {
+  background: #202d36;
 }

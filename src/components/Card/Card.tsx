@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./style.module.css";
+import { useTheme } from "../../contexts/ThemeContext";
 
 interface IProps {
   name: string;
@@ -19,8 +20,12 @@ export default function Card({
   id,
 }: IProps) {
   const navigate = useNavigate();
+  const { dark } = useTheme();
   return (
-    <div onClick={() => navigate(`/country/${id}`)} className={styles.card}>
+    <div
+      onClick={() => navigate(`/country/${id}`)}
+      className={`${styles.card} ${dark && styles.dark}`}
+    >
       <img src={image} alt="" />
       <div className={styles.inner}>
         <p className={styles.name}>{name}</p>

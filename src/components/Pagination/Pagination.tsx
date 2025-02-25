@@ -1,3 +1,4 @@
+import { useTheme } from "../../contexts/ThemeContext";
 import styles from "./style.module.css";
 
 interface IProps {
@@ -10,6 +11,7 @@ export default function Pagination({
   currentPage,
   setCurrentPage,
 }: IProps) {
+  const { dark } = useTheme();
   return (
     <div className={styles.row}>
       {totalPages &&
@@ -17,9 +19,9 @@ export default function Pagination({
           return (
             <div
               key={i}
-              className={`${styles.item} ${
+              className={`${styles.item} ${dark && styles.dark} ${
                 i + 1 === currentPage && styles.active
-              }`}
+              } `}
               onClick={() => {
                 setCurrentPage(i + 1);
               }}
