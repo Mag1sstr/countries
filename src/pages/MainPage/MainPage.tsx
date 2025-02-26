@@ -5,8 +5,12 @@ import { getCountries } from "../../API/api";
 import { IQuery } from "../../interfaces/interfaces";
 import Pagination from "../../components/Pagination/Pagination";
 import { useState } from "react";
+import Search from "../../components/Search/Search";
+import Dropdown from "../../components/Dropdown/Dropdown";
 
 export default function MainPage() {
+  const [searchValue, setSearchValue] = useState("");
+
   const { data, error }: IQuery = useQuery({
     queryKey: ["countries"],
     queryFn: getCountries,
@@ -22,25 +26,38 @@ export default function MainPage() {
     <section className={styles.main}>
       <div className="conteiner">
         {error && <div>{error.message + " :("} </div>}
+        <div className={styles.filters}>
+          <Search searchValue={searchValue} setSearchValue={setSearchValue} />
+          <Dropdown />
+        </div>
         <Pagination
           totalPages={totalPages}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
+          searchValue={searchValue}
         />
         <div className={styles.row}>
-          {data?.slice(startPageIndex, endPageIndex).map((item) => {
-            return (
-              <Card
-                key={item.name.common}
-                name={item.name.common}
-                population={item.population}
-                image={item.flags.png}
-                region={item.region}
-                capital={item.capital}
-                id={item.ccn3}
-              />
-            );
-          })}
+          {data
+            ?.filter((c) =>
+              c.name.common
+                .trim()
+                .toLowerCase()
+                .includes(searchValue.trim().toLowerCase())
+            )
+            .slice(startPageIndex, endPageIndex)
+            .map((item) => {
+              return (
+                <Card
+                  key={item.name.common}
+                  name={item.name.common}
+                  population={item.population}
+                  image={item.flags.png}
+                  region={item.region}
+                  capital={item.capital}
+                  id={item.ccn3}
+                />
+              );
+            })}
         </div>
       </div>
     </section>
