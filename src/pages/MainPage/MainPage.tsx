@@ -1,20 +1,37 @@
 import styles from "./style.module.css";
 import Card from "../../components/Card/Card";
-import { useQuery } from "@tanstack/react-query";
-import { getCountries } from "../../API/api";
-import { IQuery } from "../../interfaces/interfaces";
+import { ICountries } from "../../interfaces/interfaces";
 import Pagination from "../../components/Pagination/Pagination";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Search from "../../components/Search/Search";
 import Dropdown from "../../components/Dropdown/Dropdown";
+import axios from "axios";
+import Spinner from "../../components/Spinner/Spinner";
 
 export default function MainPage() {
   const [searchValue, setSearchValue] = useState("");
+  const [data, setData] = useState<ICountries[] | null>(null);
+  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
 
-  const { data, error }: IQuery = useQuery({
-    queryKey: ["countries"],
-    queryFn: getCountries,
-  });
+  useEffect(() => {
+    // let params = "";
+    if (!selectedRegion) {
+      axios.get("https://restcountries.com/v3.1/all").then((resp) => {
+        setData(resp.data);
+      });
+    } else {
+      axios
+        .get(`https://restcountries.com/v3.1/region/${selectedRegion}`)
+        .then((resp) => {
+          setData(resp.data);
+        });
+    }
+  }, [selectedRegion]);
+
+  // const { data, error }: IQuery = useQuery({
+  //   queryKey: ["countries"],
+  //   queryFn: getCountries,
+  // });
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;
@@ -22,13 +39,17 @@ export default function MainPage() {
   const startPageIndex = currentPage * pageSize - pageSize;
   const endPageIndex = startPageIndex + pageSize;
 
+  if (!data) {
+    return <Spinner />;
+  }
+
   return (
     <section className={styles.main}>
       <div className="conteiner">
-        {error && <div>{error.message + " :("} </div>}
+        {/* {error && <div>{error.message + " :("} </div>} */}
         <div className={styles.filters}>
           <Search searchValue={searchValue} setSearchValue={setSearchValue} />
-          <Dropdown />
+          <Dropdown setSelectedRegion={setSelectedRegion} />
         </div>
         <Pagination
           totalPages={totalPages}
